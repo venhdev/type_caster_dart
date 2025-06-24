@@ -1,39 +1,112 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Type Caster
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages). 
+[![Pub Version](https://img.shields.io/pub/v/type_caster?style=flat-square)](https://pub.dev/packages/type_caster)
+[![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/venhdev/type_caster_dart/dart.yml?branch=main&style=flat-square)](https://github.com/venhdev/type_caster_dart/actions)
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+A powerful type casting and conversion library for Dart that provides safe and flexible type conversion utilities.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- Safe type casting with clear error handling
+- Support for common Dart types (int, double, String, bool, List, Map, etc.)
+- Extensible architecture for custom type converters
+- Null safety support
+- Clear and descriptive error messages
+- No external dependencies
 
-## Getting started
+## Installation
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Add `type_caster` to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  type_caster: ^1.0.0
+```
+
+Then run:
+
+```bash
+flutter pub get
+# or
+# dart pub get
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+### Basic Usage
 
 ```dart
-const like = 'sample';
+import 'package:type_caster/type_caster.dart';
+
+void main() {
+  // Safe type casting
+  final dynamic value = '123';
+  
+  // Cast to int
+  final int? number = value.castTo<int>();
+  print(number); // 123
+  
+  // With default value
+  final double doubleValue = value.castTo<double>(orDefault: 0.0);
+  print(doubleValue); // 123.0
+  
+  // Handle errors
+  try {
+    final bool boolValue = value.castTo<bool>();
+  } on TypeCastException catch (e) {
+    print('Failed to cast: ${e.message}');
+  }
+}
 ```
 
-## Additional information
+### Advanced Usage
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+```dart
+// Custom type conversion
+class User {
+  final String name;
+  final int age;
+  
+  User({required this.name, required this.age});
+  
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      name: json['name'].castTo<String>(),
+      age: json['age'].castTo<int>(),
+    );
+  }
+}
+
+void main() {
+  final data = {
+    'name': 'John Doe',
+    'age': 30,
+  };
+  
+  final user = User.fromJson(data);
+  print('${user.name} is ${user.age} years old');
+}
+```
+
+## API Reference
+
+### Extension Methods
+
+- `T? castTo<T>({T? orDefault})`: Attempts to cast the value to type T
+- `T asType<T>()`: Alias for `castTo<T>()`
+- `T castOrThrow<T>()`: Casts the value to type T or throws a `TypeCastException`
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+If you find this package useful, please consider giving it a star on [GitHub](https://github.com/venhdev/type_caster_dart).
+
+For issues and feature requests, please use the [issue tracker](https://github.com/venhdev/type_caster_dart/issues).
