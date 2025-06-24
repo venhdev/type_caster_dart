@@ -1,7 +1,8 @@
 name: type_caster
 description: A starting point for Dart libraries or applications.
-version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+version: 0.0.1+1.beta
+repository: https://github.com/venhdev/type_caster_dart
+home: https://github.com/venhdev/type_caster_dart
 
 environment:
   sdk: ">=3.0.0 <4.0.0"

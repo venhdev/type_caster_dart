@@ -1,8 +1,5 @@
-/// Support for doing something awesome.
-///
-/// More dartdocs go here.
-library;
+library type_caster;
 
-export 'src/type_caster_base.dart';
-
-// TODO: Export any libraries intended for clients of this package.
+export 'src/core/caster_core.dart';
+export 'src/error/exceptions.dart';
+export 'src/utils/cast_string_utils.dart';
