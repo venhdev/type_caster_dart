@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.1+2.beta]
+
+### Added
+
+- GitHub Actions for CI/CD
+
 ## [0.0.1+1.beta]
 
 ### Added
