@@ -1,6 +1,9 @@
 import 'package:type_caster/type_caster.dart';
 
 extension DynamicCastExtension on Object {
+  // Object obj -- obj.tryAs<Type>?.methodOfType()
+  T? tryAs<T>() => (this is T) ? (this as T) : null;
+
   String asString() => StringCaster().cast(this);
   String? tryString() => StringCaster().tryCast(this);
 

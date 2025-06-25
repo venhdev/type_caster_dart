@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import '../error/exceptions.dart';
-import '../utils/cast_string_utils.dart';
+import '../utils/string_utils.dart';
 
 // Built-in types
 // The Dart language has special support for the following:
