@@ -24,6 +24,8 @@ abstract interface class Castable<T> {
 }
 
 abstract class TypeCaster<T> implements Castable<T> {
+  T call(dynamic value, {T Function()? orElse});
+
   /// Casts a dynamic value to the type [T].
   ///
   /// Throws a [CastException] if the value cannot be cast to the type [T].
@@ -52,6 +54,10 @@ abstract class TypeCaster<T> implements Castable<T> {
 
 class NumberCaster extends TypeCaster<num> {
   @override
+  num call(dynamic value, {num Function()? orElse}) =>
+      cast(value, orElse: orElse);
+
+  @override
   num cast(dynamic value, {num Function()? orElse}) {
     if (value is num) {
       return value;
@@ -74,6 +80,10 @@ class NumberCaster extends TypeCaster<num> {
 
 class IntCaster extends TypeCaster<int> {
   @override
+  int call(dynamic value, {int Function()? orElse}) =>
+      cast(value, orElse: orElse);
+
+  @override
   int cast(dynamic value, {int Function()? orElse}) {
     try {
       if (value is int) {
@@ -93,6 +103,10 @@ class IntCaster extends TypeCaster<int> {
 }
 
 class DoubleCaster extends TypeCaster<double> {
+  @override
+  double call(dynamic value, {double Function()? orElse}) =>
+      cast(value, orElse: orElse);
+
   @override
   double cast(dynamic value, {double Function()? orElse}) {
     try {
@@ -114,6 +128,10 @@ class DoubleCaster extends TypeCaster<double> {
 
 class StringCaster extends TypeCaster<String> {
   @override
+  String call(dynamic value, {String Function()? orElse}) =>
+      cast(value, orElse: orElse);
+
+  @override
   String cast(dynamic value, {String Function()? orElse}) {
     try {
       return stringify(value);
@@ -125,6 +143,10 @@ class StringCaster extends TypeCaster<String> {
 }
 
 class BoolCaster extends TypeCaster<bool> {
+  @override
+  bool call(dynamic value, {bool Function()? orElse}) =>
+      cast(value, orElse: orElse);
+
   @override
   bool cast(dynamic value, {bool Function()? orElse}) {
     try {
@@ -152,6 +174,22 @@ class BoolCaster extends TypeCaster<bool> {
 }
 
 class ListCaster<T> extends TypeCaster<List<T>> {
+  @override
+  List<T> call(
+    dynamic value, {
+    List<T> Function()? orElse,
+    T Function(dynamic)? itemDecoder,
+    bool allowStringToList = true,
+    String separator = ',',
+  }) =>
+      cast(
+        value,
+        orElse: orElse,
+        itemDecoder: itemDecoder,
+        allowStringToList: allowStringToList,
+        separator: separator,
+      );
+
   @override
   List<T> cast(
     dynamic value, {
