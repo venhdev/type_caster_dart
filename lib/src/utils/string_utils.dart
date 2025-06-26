@@ -1,5 +1,12 @@
 import 'dart:convert';
 
+String maybeTruncate(String s, int? max) {
+  if (max == null || s.length <= max) {
+    return s;
+  }
+  return s.substring(0, max);
+}
+
 /// Formats JSON data with indentation and optional field length truncation.
 /// [data] The data to format as JSON
 /// [indent] The indentation string (default: null)
@@ -25,7 +32,9 @@ String indentJson(
 /// [input] The input data to process
 /// [maxLen] Maximum length for string fields
 /// Returns: Processed data with truncated string fields
-dynamic truncateInnerString(dynamic input, int maxLen) {
+dynamic truncateInnerString(dynamic input, int? maxLen) {
+  if (maxLen == null) return input;
+
   if (input is Map) {
     return input.map(
       (key, value) => MapEntry(
