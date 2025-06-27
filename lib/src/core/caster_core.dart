@@ -19,18 +19,26 @@ import '../utils/string_utils.dart';
 // Symbols (Symbol)
 // The value null (Null)
 
-T? tryAs<T>(dynamic dst, {T? Function()? orElse}) =>
-    (dst is T) ? dst : orElse?.call();
-String? tryString(dynamic val, {String Function()? orElse}) =>
-    StringCaster().tryCast(val, orElse: orElse);
-num? tryNum(dynamic val, {num Function()? orElse}) =>
-    NumberCaster().tryCast(val, orElse: orElse);
-int? tryInt(dynamic val, {int Function()? orElse}) =>
-    IntCaster().tryCast(val, orElse: orElse);
-double? tryDouble(dynamic val, {double Function()? orElse}) =>
-    DoubleCaster().tryCast(val, orElse: orElse);
-bool? tryBool(dynamic val, {bool Function()? orElse}) =>
-    BoolCaster().tryCast(val, orElse: orElse);
+/// Tries to cast [src] to type [T].
+/// If [src] is already of type [T], returns it.
+/// Returns the result of [orElse] if provided and casting fails, otherwise null.
+T? tryAs<T>(
+  dynamic src, {
+  T? Function()? orElse,
+}) {
+  try {
+    if (src is T) return src;
+    return orElse?.call();
+  } catch (_) {
+    return null;
+  }
+}
+
+String? tryString(dynamic val, {String Function()? orElse}) => StringCaster().tryCast(val, orElse: orElse);
+num? tryNum(dynamic val, {num Function()? orElse}) => NumberCaster().tryCast(val, orElse: orElse);
+int? tryInt(dynamic val, {int Function()? orElse}) => IntCaster().tryCast(val, orElse: orElse);
+double? tryDouble(dynamic val, {double Function()? orElse}) => DoubleCaster().tryCast(val, orElse: orElse);
+bool? tryBool(dynamic val, {bool Function()? orElse}) => BoolCaster().tryCast(val, orElse: orElse);
 List<T>? tryList<T>(
   dynamic val, {
   List<T> Function()? orElse,
@@ -44,16 +52,11 @@ List<T>? tryList<T>(
       separator: separator,
     );
 
-String asString(dynamic val, {String Function()? orElse}) =>
-    StringCaster().cast(val, orElse: orElse);
-num asNum(dynamic val, {num Function()? orElse}) =>
-    NumberCaster().cast(val, orElse: orElse);
-int asInt(dynamic val, {int Function()? orElse}) =>
-    IntCaster().cast(val, orElse: orElse);
-double asDouble(dynamic val, {double Function()? orElse}) =>
-    DoubleCaster().cast(val, orElse: orElse);
-bool asBool(dynamic val, {bool Function()? orElse}) =>
-    BoolCaster().cast(val, orElse: orElse);
+String asString(dynamic val, {String Function()? orElse}) => StringCaster().cast(val, orElse: orElse);
+num asNum(dynamic val, {num Function()? orElse}) => NumberCaster().cast(val, orElse: orElse);
+int asInt(dynamic val, {int Function()? orElse}) => IntCaster().cast(val, orElse: orElse);
+double asDouble(dynamic val, {double Function()? orElse}) => DoubleCaster().cast(val, orElse: orElse);
+bool asBool(dynamic val, {bool Function()? orElse}) => BoolCaster().cast(val, orElse: orElse);
 List<T> asList<T>(
   dynamic val, {
   List<T> Function()? orElse,
@@ -103,8 +106,7 @@ abstract class TypeCaster<T> implements Castable<T> {
 
 class NumberCaster extends TypeCaster<num> {
   @override
-  num call(dynamic value, {num Function()? orElse}) =>
-      cast(value, orElse: orElse);
+  num call(dynamic value, {num Function()? orElse}) => cast(value, orElse: orElse);
 
   @override
   num cast(dynamic value, {num Function()? orElse}) {
@@ -129,8 +131,7 @@ class NumberCaster extends TypeCaster<num> {
 
 class IntCaster extends TypeCaster<int> {
   @override
-  int call(dynamic value, {int Function()? orElse}) =>
-      cast(value, orElse: orElse);
+  int call(dynamic value, {int Function()? orElse}) => cast(value, orElse: orElse);
 
   @override
   int cast(dynamic value, {int Function()? orElse}) {
@@ -153,8 +154,7 @@ class IntCaster extends TypeCaster<int> {
 
 class DoubleCaster extends TypeCaster<double> {
   @override
-  double call(dynamic value, {double Function()? orElse}) =>
-      cast(value, orElse: orElse);
+  double call(dynamic value, {double Function()? orElse}) => cast(value, orElse: orElse);
 
   @override
   double cast(dynamic value, {double Function()? orElse}) {
@@ -177,8 +177,7 @@ class DoubleCaster extends TypeCaster<double> {
 
 class StringCaster extends TypeCaster<String> {
   @override
-  String call(dynamic value, {String Function()? orElse}) =>
-      cast(value, orElse: orElse);
+  String call(dynamic value, {String Function()? orElse}) => cast(value, orElse: orElse);
 
   @override
   String cast(dynamic value, {String Function()? orElse}) {
@@ -193,8 +192,7 @@ class StringCaster extends TypeCaster<String> {
 
 class BoolCaster extends TypeCaster<bool> {
   @override
-  bool call(dynamic value, {bool Function()? orElse}) =>
-      cast(value, orElse: orElse);
+  bool call(dynamic value, {bool Function()? orElse}) => cast(value, orElse: orElse);
 
   @override
   bool cast(dynamic value, {bool Function()? orElse}) {
