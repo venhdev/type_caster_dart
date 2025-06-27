@@ -9,6 +9,20 @@ num? tryNum(dynamic val) => NumberCaster().tryCast(val);
 int? tryInt(dynamic val) => IntCaster().tryCast(val);
 double? tryDouble(dynamic val) => DoubleCaster().tryCast(val);
 bool? tryBool(dynamic val) => BoolCaster().tryCast(val);
+List<T>? tryList<T>(
+  dynamic val, {
+  List<T> Function()? orElse,
+  T Function(dynamic)? itemDecoder,
+  bool allowStringToList = true,
+  String separator = ',',
+}) =>
+    ListCaster<T>().tryCast(
+      val,
+      orElse: orElse,
+      itemDecoder: itemDecoder,
+      allowStringToList: allowStringToList,
+      separator: separator,
+    );
 
 String asString(dynamic val) => StringCaster().cast(val);
 num asNum(dynamic val) => NumberCaster().cast(val);
