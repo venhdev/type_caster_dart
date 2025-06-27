@@ -1,0 +1,1 @@
+enum TruncatePosition { start, end }

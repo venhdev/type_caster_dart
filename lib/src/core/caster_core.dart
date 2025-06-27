@@ -12,12 +12,61 @@ import '../utils/string_utils.dart';
 // ✅ Booleans (bool)
 // Records ((value1, value2))
 // Functions (Function)
-// ✅ Lists (List, also known as arrays)
-// Sets (Set)
+// ✅ Lists (List, also known as arrays) -- Iterrable
+// ✅ Sets (Set)
 // Maps (Map)
 // Runes (Runes; often replaced by the characters API)
 // Symbols (Symbol)
 // The value null (Null)
+
+T? tryAs<T>(dynamic dst, {T? Function()? orElse}) =>
+    (dst is T) ? dst : orElse?.call();
+String? tryString(dynamic val, {String Function()? orElse}) =>
+    StringCaster().tryCast(val, orElse: orElse);
+num? tryNum(dynamic val, {num Function()? orElse}) =>
+    NumberCaster().tryCast(val, orElse: orElse);
+int? tryInt(dynamic val, {int Function()? orElse}) =>
+    IntCaster().tryCast(val, orElse: orElse);
+double? tryDouble(dynamic val, {double Function()? orElse}) =>
+    DoubleCaster().tryCast(val, orElse: orElse);
+bool? tryBool(dynamic val, {bool Function()? orElse}) =>
+    BoolCaster().tryCast(val, orElse: orElse);
+List<T>? tryList<T>(
+  dynamic val, {
+  List<T> Function()? orElse,
+  T Function(dynamic)? itemDecoder,
+  String separator = ',',
+}) =>
+    ListCaster<T>().tryCast(
+      val,
+      orElse: orElse,
+      itemDecoder: itemDecoder,
+      separator: separator,
+    );
+
+String asString(dynamic val, {String Function()? orElse}) =>
+    StringCaster().cast(val, orElse: orElse);
+num asNum(dynamic val, {num Function()? orElse}) =>
+    NumberCaster().cast(val, orElse: orElse);
+int asInt(dynamic val, {int Function()? orElse}) =>
+    IntCaster().cast(val, orElse: orElse);
+double asDouble(dynamic val, {double Function()? orElse}) =>
+    DoubleCaster().cast(val, orElse: orElse);
+bool asBool(dynamic val, {bool Function()? orElse}) =>
+    BoolCaster().cast(val, orElse: orElse);
+List<T> asList<T>(
+  dynamic val, {
+  List<T> Function()? orElse,
+  T Function(dynamic)? itemDecoder,
+  String separator = ',',
+}) =>
+    ListCaster<T>().cast(
+      val,
+      orElse: orElse,
+      itemDecoder: itemDecoder,
+      separator: separator,
+    );
+
 abstract interface class Castable<T> {
   T cast(dynamic value, {T Function()? orElse});
   T? tryCast(dynamic value, {T Function()? orElse});
@@ -179,14 +228,12 @@ class ListCaster<T> extends TypeCaster<List<T>> {
     dynamic value, {
     List<T> Function()? orElse,
     T Function(dynamic)? itemDecoder,
-    bool allowStringToList = true,
     String separator = ',',
   }) =>
       cast(
         value,
         orElse: orElse,
         itemDecoder: itemDecoder,
-        allowStringToList: allowStringToList,
         separator: separator,
       );
 
@@ -195,12 +242,13 @@ class ListCaster<T> extends TypeCaster<List<T>> {
     dynamic value, {
     List<T> Function()? orElse,
     T Function(dynamic)? itemDecoder,
-    bool allowStringToList = true,
     String separator = ',',
   }) {
     try {
       if (value is List) {
         return value.cast<T>();
+      } else if (value is Set) {
+        return value.cast<T>().toList();
       } else if (value is String) {
         final trimmed = value.trim();
         // Handle JSON array string
@@ -234,7 +282,6 @@ class ListCaster<T> extends TypeCaster<List<T>> {
     dynamic value, {
     List<T> Function()? orElse,
     T Function(dynamic)? itemDecoder,
-    bool allowStringToList = true,
     String separator = ',',
   }) {
     try {
@@ -243,7 +290,6 @@ class ListCaster<T> extends TypeCaster<List<T>> {
         value,
         orElse: orElse,
         itemDecoder: itemDecoder,
-        allowStringToList: allowStringToList,
         separator: separator,
       );
     } catch (e) {

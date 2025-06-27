@@ -63,6 +63,8 @@ void main() {
 
 ### Advanced Usage
 
+### Custom Caster Example
+
 ```dart
 // Custom type conversion
 class User {
@@ -73,20 +75,10 @@ class User {
   
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      name: json['name'].asString(),
-      age: json['age'].asInt(),
+      name: json['name']?.asString(),
+      age: json['age']?.asInt(),
     );
   }
-}
-
-void main() {
-  final data = {
-    'name': 'John Doe',
-    'age': 30,
-  };
-  
-  final user = User.fromJson(data);
-  print('${user.name} is ${user.age} years old');
 }
 ```
 

@@ -1,11 +1,33 @@
 import 'dart:convert';
 
-String maybeTruncate(String s, int? max) {
-  if (max == null || s.length <= max) {
-    return s;
+import '../core/types.dart';
+
+String truncate(
+  String text, {
+  int? maxLength,
+  String omission = '...',
+  TruncatePosition position = TruncatePosition.end,
+}) {
+  if (maxLength == null) return text;
+
+  if (text.length <= maxLength) {
+    return text;
   }
-  return s.substring(0, max);
+  switch (position) {
+    case TruncatePosition.start:
+      return omission +
+          text.substring(text.length - maxLength + omission.length);
+    case TruncatePosition.end:
+      return text.substring(0, maxLength - omission.length) + omission;
+  }
 }
+
+// String truncate(String s, int? max) {
+//   if (max == null || s.length <= max) {
+//     return s;
+//   }
+//   return s.substring(0, max);
+// }
 
 /// Formats JSON data with indentation and optional field length truncation.
 /// [data] The data to format as JSON
