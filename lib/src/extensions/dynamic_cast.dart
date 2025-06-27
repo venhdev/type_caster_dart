@@ -1,4 +1,7 @@
-import 'package:type_caster/type_caster.dart';
+import '../core/caster_core.dart';
+import '../utils/string_utils.dart' as s;
+
+part 'string_apis.dart';
 
 T? tryAs<T>(dynamic dst) => (dst is T) ? dst : null;
 String? tryString(dynamic val) => StringCaster().tryCast(val);
