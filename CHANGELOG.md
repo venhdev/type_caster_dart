@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.0.3]
+## [0.0.4]
 
 - Refactor: Core type casting and extension system
 - Added: Extension API system (e.g., StringApi)
