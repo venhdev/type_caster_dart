@@ -21,13 +21,16 @@ import '../utils/string_utils.dart';
 
 /// Tries to cast [src] to type [T].
 /// If [src] is already of type [T], returns it.
+/// If [caster] is provided, uses it to attempt conversion.
 /// Returns the result of [orElse] if provided and casting fails, otherwise null.
 T? tryAs<T>(
   dynamic src, {
   T? Function()? orElse,
+  T Function(dynamic)? caster,
 }) {
   try {
     if (src is T) return src;
+    if (caster != null) return caster(src);
     return orElse?.call();
   } catch (_) {
     return null;
