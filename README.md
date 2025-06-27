@@ -5,18 +5,12 @@
 [![Build Status](https://img.shields.io/github/actions/workflow/status/venhdev/type_caster_dart/release.yml?branch=main&style=flat-square)](https://github.com/venhdev/type_caster_dart/actions)
 [![Code Coverage](https://img.shields.io/badge/Coverage-80%25%2B-brightgreen?style=flat-square)](https://github.com/venhdev/type_caster_dart/actions)
 
-A powerful type casting and conversion library for Dart that provides safe and flexible type conversion utilities.
+A lightweight and safe type casting library for Dart that provides flexible type conversion utilities with clear error handling.
 
 ## Features
 
-- Safe type casting with clear error handling
-- Support for common Dart types (int, double, String, bool, List, Set, etc.)
-- Extensible extension API system for type conversion (e.g., StringApi)
-- Advanced string utilities, including flexible truncation
-- ListCaster supports Set to List conversion and robust string parsing
-- Null safety support
-- Clear and descriptive error messages
-- No external dependencies
+- Support for common Dart types: `int`, `double`, `String`, `bool`, `List`, `Set`
+- Global casting functions: `tryAs<T>()`, `asString()`, `asInt()`, etc.
 
 ## Installation
 
@@ -37,7 +31,7 @@ flutter pub get
 
 ## Usage
 
-### Basic Usage
+### Basic Type Casting
 
 ```dart
 import 'package:type_caster/type_caster.dart';
@@ -45,58 +39,40 @@ import 'package:type_caster/type_caster.dart';
 void main() {
   final Object? value = '123';
 
-  // Global Functions
-  final int? intValue = tryAs<int>(value);
-  print('tryAs<int>(value): $intValue'); // Output: 123
-
-  final String stringValue = asString(value);
-  print('asString(value): $stringValue'); // Output: 123
-
-  final bool boolValue = asBool(value, orElse: () => false);
-  print('asBool(value, orElse: () => false): $boolValue'); // Output: false
-
-  final List<int> listValue = asList<int>('[1,2,3]', itemDecoder: (e) => asInt(e));
-  print('asList<int>(\'[1,2,3]\', itemDecoder: (e) => asInt(e)): $listValue'); // Output: [1, 2, 3]
-
-  // Handle errors
+  // Using global functions
+  final int? number = tryInt(value);     // Returns: 123
+  final String text = asString(value);    // Returns: "123"
+  
+  // With fallback values using orElse
+  final bool flag = asBool(value, orElse: () => false);  // Returns: false
+  
+  // Error handling
   try {
-    final bool boolValue = asBool(value);
+    final bool result = asBool('not-a-bool');
   } on CastException catch (e) {
-    print('Failed to cast: ${e.message}');
+    print(e.toString()); // "Cannot cast String to bool | Source: not-a-bool"
   }
 }
 ```
 
-### String Truncation
-
-The new extension API provides advanced string truncation:
+### List Conversion
 
 ```dart
 import 'package:type_caster/type_caster.dart';
 
 void main() {
-  final text = 'Hello, this is a long string!';
-  print(text.truncate(10)); // 'Hello, ...'
-  print(text.truncate(10, omission: '***', position: TruncatePosition.start)); // '***ng string!'
-}
-```
-
-- `TruncatePosition.end` (default): Truncates at the end, appending the omission.
-- `TruncatePosition.start`: Truncates at the start, prepending the omission.
-
-### List and Set Conversion
-
-```dart
-import 'package:type_caster/type_caster.dart';
-
-void main() {
+  // From JSON array string
+  final numbers = asList<int>('[1,2,3]', itemDecoder: (e) => asInt(e));
+  print(numbers); // [1, 2, 3]
+  
+  // From comma-separated string
+  final items = asList<String>('a,b,c');
+  print(items); // ["a", "b", "c"]
+  
+  // From Set to List
   final set = {'1', '2', '3'};
-  final list = set.asList<String>();
-  print(list); // [1, 2, 3]
-
-  final csv = 'a,b,c';
-  final listFromString = csv.asList<String>();
-  print(listFromString); // [a, b, c]
+  final list = asList<String>(set);
+  print(list); // ["1", "2", "3"]
 }
 ```
 
@@ -104,15 +80,15 @@ void main() {
 
 ```dart
 class User {
-  final String name;
-  final int age;
+  final String? name;
+  final int? age;
 
   User({required this.name, required this.age});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      name: json['name']?.asString(),
-      age: json['age']?.asInt(),
+      name: tryString(json['name']),
+      age: tryInt(json['age']),
     );
   }
 }
@@ -120,25 +96,33 @@ class User {
 
 ## API Reference
 
-### Extension Methods (via Extension API)
+### Global Functions
 
-- `String.truncate([int? maxLength, String omission = '...', TruncatePosition position = TruncatePosition.end])`: Truncate a string with flexible options.
-- `String asString([String Function()? orElse])`: Casts the string to `String` or throws `CastException`.
-- `String? tryString([String Function()? orElse])`: Tries to cast the string to `String`.
-- `num asNum([num Function()? orElse])`: Casts the string to `num` or throws `CastException`.
-- `num? tryNum([num Function()? orElse])`: Tries to cast the string to `num`.
-- `int asInt([int Function()? orElse])`: Casts the string to `int` or throws `CastException`.
-- `int? tryInt([int Function()? orElse])`: Tries to cast the string to `int`.
-- `double asDouble([double Function()? orElse])`: Casts the string to `double` or throws `CastException`.
-- `double? tryDouble([double Function()? orElse])`: Tries to cast the string to `double`.
-- `bool asBool([bool Function()? orElse])`: Casts the string to `bool` or throws `CastException`.
-- `bool? tryBool([bool Function()? orElse])`: Tries to cast the string to `bool`.
-- `List<T> asList<T>([List<T> Function()? orElse, T Function(dynamic)? itemDecoder, String separator = ','])`: Casts the string to `List<T>` or throws `CastException`.
-- `List<T>? tryList<T>([List<T> Function()? orElse, T Function(dynamic)? itemDecoder, String separator = ','])`: Tries to cast the string to `List<T>`.
+#### Type Casting
+- `T? tryAs<T>(dynamic src, {T? Function()? orElse})`: Generic type casting
+- `String asString(dynamic val, {String Function()? orElse})`
+- `String? tryString(dynamic val, {String Function()? orElse})`
+- `num asNum(dynamic val, {num Function()? orElse})`
+- `num? tryNum(dynamic val, {num Function()? orElse})`
+- `int asInt(dynamic val, {int Function()? orElse})`
+- `int? tryInt(dynamic val, {int Function()? orElse})`
+- `double asDouble(dynamic val, {double Function()? orElse})`
+- `double? tryDouble(dynamic val, {double Function()? orElse})`
+- `bool asBool(dynamic val, {bool Function()? orElse})`
+- `bool? tryBool(dynamic val, {bool Function()? orElse})`
 
-#### Enum
+#### List Operations
+- `List<T> asList<T>(dynamic val, {List<T> Function()? orElse, T Function(dynamic)? itemDecoder, String separator = ','})`
+- `List<T>? tryList<T>(dynamic val, {List<T> Function()? orElse, T Function(dynamic)? itemDecoder, String separator = ','})`
 
-- `enum TruncatePosition { start, end }`
+### Error Handling
+
+The library uses `CastException` for error handling, providing:
+- Source value and type information
+- Target type information
+- Optional custom message
+- Optional inner exception
+- Colorized error output
 
 ## Contributing
 
