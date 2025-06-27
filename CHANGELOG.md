@@ -2,11 +2,9 @@
 
 ## [0.0.3]
 
-- (Added) maybeTruncate
-
-### Added
-
-- GitHub Actions for CI/CD
+- Refactor: Core type casting and extension system
+- Added: Extension API system (e.g., StringApi)
+- Removed: Deprecated files and APIs (e.g., dynamic_cast.dart, maybeTruncate)
 
 ## [0.0.1+1.beta]
 

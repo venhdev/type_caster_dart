@@ -10,8 +10,10 @@ A powerful type casting and conversion library for Dart that provides safe and f
 ## Features
 
 - Safe type casting with clear error handling
-- Support for common Dart types (int, double, String, bool, List, Map, etc.)
-- Extensible architecture for custom type converters
+- Support for common Dart types (int, double, String, bool, List, Set, etc.)
+- Extensible extension API system for type conversion (e.g., StringApi)
+- Advanced string utilities, including flexible truncation
+- ListCaster supports Set to List conversion and robust string parsing
 - Null safety support
 - Clear and descriptive error messages
 - No external dependencies
@@ -22,7 +24,7 @@ Add `type_caster` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  type_caster: ^1.0.0
+  type_caster: ^0.0.3
 ```
 
 Then run:
@@ -41,38 +43,72 @@ flutter pub get
 import 'package:type_caster/type_caster.dart';
 
 void main() {
-  // Safe type casting
-  final dynamic value = '123';
-  
-  // Cast to int
-  final int? number = value.tryInt();
-  print(number); // 123
-  
-  // With default value (using orElse)
-  final double doubleValue = value.asDouble(orElse: () => 0.0);
-  print(doubleValue); // 123.0
-  
+  final Object? value = '123';
+
+  // Global Functions
+  final int? intValue = tryAs<int>(value);
+  print('tryAs<int>(value): $intValue'); // Output: 123
+
+  final String stringValue = asString(value);
+  print('asString(value): $stringValue'); // Output: 123
+
+  final bool boolValue = asBool(value, orElse: () => false);
+  print('asBool(value, orElse: () => false): $boolValue'); // Output: false
+
+  final List<int> listValue = asList<int>('[1,2,3]', itemDecoder: (e) => asInt(e));
+  print('asList<int>(\'[1,2,3]\', itemDecoder: (e) => asInt(e)): $listValue'); // Output: [1, 2, 3]
+
   // Handle errors
   try {
-    final bool boolValue = value.asBool();
+    final bool boolValue = asBool(value);
   } on CastException catch (e) {
     print('Failed to cast: ${e.message}');
   }
 }
 ```
 
-### Advanced Usage
+### String Truncation
+
+The new extension API provides advanced string truncation:
+
+```dart
+import 'package:type_caster/type_caster.dart';
+
+void main() {
+  final text = 'Hello, this is a long string!';
+  print(text.truncate(10)); // 'Hello, ...'
+  print(text.truncate(10, omission: '***', position: TruncatePosition.start)); // '***ng string!'
+}
+```
+
+- `TruncatePosition.end` (default): Truncates at the end, appending the omission.
+- `TruncatePosition.start`: Truncates at the start, prepending the omission.
+
+### List and Set Conversion
+
+```dart
+import 'package:type_caster/type_caster.dart';
+
+void main() {
+  final set = {'1', '2', '3'};
+  final list = set.asList<String>();
+  print(list); // [1, 2, 3]
+
+  final csv = 'a,b,c';
+  final listFromString = csv.asList<String>();
+  print(listFromString); // [a, b, c]
+}
+```
 
 ### Custom Caster Example
 
 ```dart
-// Custom type conversion
 class User {
   final String name;
   final int age;
-  
+
   User({required this.name, required this.age});
-  
+
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       name: json['name']?.asString(),
@@ -84,21 +120,25 @@ class User {
 
 ## API Reference
 
-### Extension Methods
+### Extension Methods (via Extension API)
 
-- `T? tryAs<T>()`: Attempts to cast the object to type `T`.
-- `String asString({String Function()? orElse})`: Casts the object to `String` or throws `CastException`.
-- `String? tryString({String Function()? orElse})`: Tries to cast the object to `String`.
-- `num asNum({num Function()? orElse})`: Casts the object to `num` or throws `CastException`.
-- `num? tryNum({num Function()? orElse})`: Tries to cast the object to `num`.
-- `int asInt({int Function()? orElse})`: Casts the object to `int` or throws `CastException`.
-- `int? tryInt({int Function()? orElse})`: Tries to cast the object to `int`.
-- `double asDouble({double Function()? orElse})`: Casts the object to `double` or throws `CastException`.
-- `double? tryDouble({double Function()? orElse})`: Tries to cast the object to `double`.
-- `bool asBool({bool Function()? orElse})`: Casts the object to `bool` or throws `CastException`.
-- `bool? tryBool({bool Function()? orElse})`: Tries to cast the object to `bool`.
-- `List<T> asList<T>({List<T> Function()? orElse, T Function(dynamic)? itemDecoder, bool allowStringToList = true, String separator = ','})`: Casts the object to `List<T>` or throws `CastException`.
-- `List<T>? tryList<T>({List<T> Function()? orElse, T Function(dynamic)? itemDecoder, bool allowStringToList = true, String separator = ','})`: Tries to cast the object to `List<T>`.
+- `String.truncate([int? maxLength, String omission = '...', TruncatePosition position = TruncatePosition.end])`: Truncate a string with flexible options.
+- `String asString([String Function()? orElse])`: Casts the string to `String` or throws `CastException`.
+- `String? tryString([String Function()? orElse])`: Tries to cast the string to `String`.
+- `num asNum([num Function()? orElse])`: Casts the string to `num` or throws `CastException`.
+- `num? tryNum([num Function()? orElse])`: Tries to cast the string to `num`.
+- `int asInt([int Function()? orElse])`: Casts the string to `int` or throws `CastException`.
+- `int? tryInt([int Function()? orElse])`: Tries to cast the string to `int`.
+- `double asDouble([double Function()? orElse])`: Casts the string to `double` or throws `CastException`.
+- `double? tryDouble([double Function()? orElse])`: Tries to cast the string to `double`.
+- `bool asBool([bool Function()? orElse])`: Casts the string to `bool` or throws `CastException`.
+- `bool? tryBool([bool Function()? orElse])`: Tries to cast the string to `bool`.
+- `List<T> asList<T>([List<T> Function()? orElse, T Function(dynamic)? itemDecoder, String separator = ','])`: Casts the string to `List<T>` or throws `CastException`.
+- `List<T>? tryList<T>([List<T> Function()? orElse, T Function(dynamic)? itemDecoder, String separator = ','])`: Tries to cast the string to `List<T>`.
+
+#### Enum
+
+- `enum TruncatePosition { start, end }`
 
 ## Contributing
 
