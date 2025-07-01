@@ -18,7 +18,7 @@ Add `type_caster` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  type_caster: ^0.0.3
+  type_caster: ^0.0.4
 ```
 
 Then run:
@@ -99,6 +99,9 @@ class User {
 ### Global Functions
 
 #### Type Casting
+
+Note: The parsing utilities (`tryParse*` and `parse*` methods) are aliases for the corresponding global functions in `caster_core.dart`, providing a more explicit way to parse various types.
+
 - `T? tryAs<T>(dynamic src, {T? Function()? orElse})`: Generic type casting
 - `String asString(dynamic val, {String Function()? orElse})`
 - `String? tryString(dynamic val, {String Function()? orElse})`
@@ -112,8 +115,24 @@ class User {
 - `bool? tryBool(dynamic val, {bool Function()? orElse})`
 
 #### List Operations
+
 - `List<T> asList<T>(dynamic val, {List<T> Function()? orElse, T Function(dynamic)? itemDecoder, String separator = ','})`
 - `List<T>? tryList<T>(dynamic val, {List<T> Function()? orElse, T Function(dynamic)? itemDecoder, String separator = ','})`
+
+#### Parsing Utilities
+
+- `String? tryParseString(dynamic value, {String Function()? orElse})`
+- `String parseString(dynamic value, {String Function()? orElse})`
+- `num? tryParseNum(dynamic value, {num Function()? orElse})`
+- `num parseNum(dynamic value, {num Function()? orElse})`
+- `int? tryParseInt(dynamic value, {int Function()? orElse})`
+- `int parseInt(dynamic value, {int Function()? orElse})`
+- `double? tryParseDouble(dynamic value, {double Function()? orElse})`
+- `double parseDouble(dynamic value, {double Function()? orElse})`
+- `bool? tryParseBool(dynamic value, {bool Function()? orElse})`
+- `bool parseBool(dynamic value, {bool Function()? orElse})`
+- `List<T>? tryParseList<T>(dynamic value, {List<T> Function()? orElse, T Function(dynamic)? itemDecoder, String separator = ','})`
+- `List<T> parseList<T>(dynamic value, {List<T> Function()? orElse, T Function(dynamic)? itemDecoder, String separator = ','})`
 
 ### Error Handling
 

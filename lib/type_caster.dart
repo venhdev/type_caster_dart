@@ -9,3 +9,4 @@ export 'src/error/exceptions.dart';
 export 'src/extensions/extensions.dart';
 // utils
 export 'src/utils/string_utils.dart';
+export 'src/utils/parse_utils.dart';
