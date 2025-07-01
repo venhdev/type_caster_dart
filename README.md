@@ -1,8 +1,7 @@
 # Type Caster
 
 [![Pub Version](https://img.shields.io/pub/v/type_caster?style=flat-square)](https://pub.dev/packages/type_caster)
-[![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/venhdev/type_caster_dart/release.yml?branch=main&style=flat-square)](https://github.com/venhdev/type_caster_dart/actions)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/venhdev/type_caster_dart/ci.yml?branch=main&style=flat-square)](https://github.com/venhdev/type_caster_dart/actions)
 [![Code Coverage](https://img.shields.io/badge/Coverage-80%25%2B-brightgreen?style=flat-square)](https://github.com/venhdev/type_caster_dart/actions)
 
 A lightweight and safe type casting library for Dart that provides flexible type conversion utilities with clear error handling.
