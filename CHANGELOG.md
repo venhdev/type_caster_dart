@@ -1,5 +1,3 @@
-# Changelog
-
 ## [0.0.5+5]
 
 - Added: DateTime API extension
