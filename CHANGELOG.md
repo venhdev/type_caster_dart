@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.5+5]
+
+- Added: DateTime API extension
+
 ## [0.0.4]
 
 - Refactor: Core type casting and extension system
