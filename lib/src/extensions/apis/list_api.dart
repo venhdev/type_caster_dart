@@ -1,3 +1,5 @@
+part of 'apis.dart';
+
 extension ListApi on List {
   T? firstWhereOrNull<T>(
     bool Function(dynamic value) condition, {
