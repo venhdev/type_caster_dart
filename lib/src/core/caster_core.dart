@@ -3,6 +3,8 @@ import 'dart:convert';
 import '../error/exceptions.dart';
 import '../utils/string_utils.dart';
 
+// TODO DateTime
+
 // Built-in types
 // The Dart language has special support for the following:
 // https://dart.dev/language/built-in-types
@@ -18,6 +20,7 @@ import '../utils/string_utils.dart';
 // Runes (Runes; often replaced by the characters API)
 // Symbols (Symbol)
 // The value null (Null)
+// DateTime
 
 /// Tries to cast [src] to type [T].
 /// If [src] is already of type [T], returns it.
