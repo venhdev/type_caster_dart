@@ -265,7 +265,8 @@ class ListCaster<T> extends TypeCaster<List<T>> {
   }) {
     try {
       if (value is List) {
-        return value.cast<T>();
+        if (itemDecoder == null) return value.cast<T>();
+        return value.map((e) => itemDecoder(e)).toList();
       } else if (value is Set) {
         return value.cast<T>().toList();
       } else if (value is String) {

@@ -1,3 +1,7 @@
+## [0.0.7+7]
+
+- Enhanced: `List` casting now applies `itemDecoder` when provided.
+
 ## [0.0.5+5]
 
 - Added: DateTime API extension

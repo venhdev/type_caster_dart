@@ -1,6 +1,10 @@
 part of 'apis.dart';
 
 extension DateTimeApi on DateTime {
+  // static DateTime? tryPattern(dynamic src, [String? pattern]) {
+  //   return tryDateTime(src, pattern: pattern);
+  // }
+
   /// Returns today's date with time set to midnight (00:00:00)
   static DateTime today() {
     final now = DateTime.now();
