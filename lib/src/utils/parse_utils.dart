@@ -3,6 +3,8 @@
 /// - parse* methods are aliases for as* functions (non-nullable return)
 library;
 
+import 'package:intl/intl.dart';
+
 import '../core/caster_core.dart';
 
 String? tryParseString(dynamic value, {String Function()? orElse}) =>
@@ -42,3 +44,22 @@ List<T> parseList<T>(dynamic value,
         String separator = ','}) =>
     asList(value,
         orElse: orElse, itemDecoder: itemDecoder, separator: separator);
+
+// others public method
+enum UnitPosition { leading, trailing }
+
+String formatCurrency(
+  num value, {
+  bool isUnitVisible = false,
+  String unit = '',
+  UnitPosition unitPosition = UnitPosition.trailing,
+  String? locale,
+  NumberFormat? customFormat,
+}) {
+  final f = customFormat ?? NumberFormat.decimalPattern(locale);
+  if (!isUnitVisible || unit.isEmpty) return f.format(value);
+
+  return unitPosition == UnitPosition.leading
+      ? '$unit ${f.format(value)}'
+      : '${f.format(value)} $unit';
+}
