@@ -11,7 +11,7 @@ import '../utils/string_utils.dart';
 // ✅ Numbers (int, double)
 // ✅ Strings (String)
 // ✅ Booleans (bool)
-// ✅ Records ((value1, value2))
+// ⏹️ Records ((value1, value2)) -- Redundant
 // Functions (Function)
 // ✅ Lists (List, also known as arrays) -- Iterrable
 // ✅ Sets (Set)
@@ -108,19 +108,7 @@ Set<T>? trySet<T>(
       separator: separator,
     );
 
-/// Try to cast a value to a record with two values (a pair).
-(A, B)? tryRecord2<A, B>(
-  dynamic val, {
-  (A, B) Function()? orElse,
-  A Function(dynamic)? firstDecoder,
-  B Function(dynamic)? secondDecoder,
-}) =>
-    RecordCaster2<A, B>().tryCast(
-      val,
-      orElse: orElse,
-      firstDecoder: firstDecoder,
-      secondDecoder: secondDecoder,
-    );
+
 
 String asString(dynamic val, {String Function()? orElse}) =>
     StringCaster().cast(val, orElse: orElse);
@@ -174,19 +162,7 @@ Set<T> asSet<T>(
       separator: separator,
     );
     
-/// Cast a value to a record with two values (a pair).
-(A, B) asRecord2<A, B>(
-  dynamic val, {
-  (A, B) Function()? orElse,
-  A Function(dynamic)? firstDecoder,
-  B Function(dynamic)? secondDecoder,
-}) =>
-    RecordCaster2<A, B>().cast(
-      val,
-      orElse: orElse,
-      firstDecoder: firstDecoder,
-      secondDecoder: secondDecoder,
-    );
+
 
 abstract interface class Castable<T> {
   T cast(dynamic value, {T Function()? orElse});
@@ -242,7 +218,7 @@ abstract class TypeCaster<T> implements Castable<T> {
         null, 
         typeName ?? T.toString(),
         message: 'Cannot cast null to non-nullable type',
-        context: context ?? '${this.runtimeType}._checkNull',
+        context: context ?? '$runtimeType._checkNull',
         stackTrace: StackTrace.current,
       );
     }
@@ -673,146 +649,7 @@ class SetCaster<T> extends TypeCaster<Set<T>> {
   }
 }
 
-class RecordCaster2<A, B> extends TypeCaster<(A, B)> {
-  @override
-  (A, B) call(
-    dynamic value, {
-    (A, B) Function()? orElse,
-    A Function(dynamic)? firstDecoder,
-    B Function(dynamic)? secondDecoder,
-  }) =>
-      cast(
-        value,
-        orElse: orElse,
-        firstDecoder: firstDecoder,
-        secondDecoder: secondDecoder,
-      );
 
-  @override
-  (A, B) cast(
-    dynamic value, {
-    (A, B) Function()? orElse,
-    A Function(dynamic)? firstDecoder,
-    B Function(dynamic)? secondDecoder,
-  }) {
-    try {
-      if (value is (A, B)) {
-        return value;
-      } else if (value is List) {
-        if (value.length < 2) {
-          throw CastException(
-            value, 
-            '(${A.runtimeType}, ${B.runtimeType})', 
-            message: 'Record requires at least 2 elements',
-          );
-        }
-        
-        final firstValue = firstDecoder != null 
-            ? firstDecoder(value[0])
-            : value[0] as A;
-            
-        final secondValue = secondDecoder != null
-            ? secondDecoder(value[1])
-            : value[1] as B;
-            
-        return (firstValue, secondValue);
-      } else if (value is Map) {
-        if (value.length < 2) {
-          throw CastException(
-            value, 
-            '(${A.runtimeType}, ${B.runtimeType})', 
-            message: 'Record requires at least 2 elements',
-          );
-        }
-        
-        final keys = value.keys.take(2).toList();
-        
-        final firstValue = firstDecoder != null
-            ? firstDecoder(value[keys[0]])
-            : value[keys[0]] as A;
-            
-        final secondValue = secondDecoder != null
-            ? secondDecoder(value[keys[1]])
-            : value[keys[1]] as B;
-            
-        return (firstValue, secondValue);
-      } else if (value is String) {
-        // Handle empty string explicitly
-        if (value.isEmpty) {
-          throw CastException(value, '(${A.runtimeType}, ${B.runtimeType})', srcType: 'empty string');
-        }
-        
-        // Check if string is formatted as a record (e.g., "(value1, value2)")
-        String trimmed = value.trim();
-        if (trimmed.startsWith('(') && trimmed.endsWith(')')) {
-          // Remove surrounding parentheses and split by comma
-          trimmed = trimmed.substring(1, trimmed.length - 1);
-          final parts = trimmed.split(',');
-          
-          if (parts.length < 2) {
-            throw CastException(
-              value, 
-              '(${A.runtimeType}, ${B.runtimeType})', 
-              message: 'Record requires at least 2 elements',
-            );
-          }
-          
-          final firstValue = firstDecoder != null
-              ? firstDecoder(parts[0].trim())
-              : parts[0].trim() as A;
-              
-          final secondValue = secondDecoder != null
-              ? secondDecoder(parts[1].trim())
-              : parts[1].trim() as B;
-              
-          return (firstValue, secondValue);
-        }
-        
-        // Try parsing as JSON array
-        try {
-          final decoded = json.decode(value);
-          return cast(
-            decoded,
-            orElse: orElse,
-            firstDecoder: firstDecoder,
-            secondDecoder: secondDecoder,
-          );
-        } catch (_) {
-          throw CastException(value, '(${A.runtimeType}, ${B.runtimeType})');
-        }
-      } else {
-        throw CastException(value, '(${A.runtimeType}, ${B.runtimeType})');
-      }
-    } catch (e) {
-      if (orElse != null) return orElse();
-      rethrow;
-    }
-  }
-
-  @override
-  (A, B)? tryCast(
-    dynamic value, {
-    (A, B) Function()? orElse,
-    A Function(dynamic)? firstDecoder,
-    B Function(dynamic)? secondDecoder,
-  }) {
-    try {
-      if (value == null) return null;
-      return cast(
-        value,
-        orElse: orElse,
-        firstDecoder: firstDecoder,
-        secondDecoder: secondDecoder,
-      );
-    } catch (e) {
-      try {
-        return orElse?.call();
-      } catch (e) {
-        return null;
-      }
-    }
-  }
-}
 
 class DateTimeCaster extends TypeCaster<DateTime> {
   @override

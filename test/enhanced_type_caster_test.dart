@@ -159,57 +159,7 @@ void main() {
       });
     });
 
-    group('Record Casting', () {
-      test('should cast List to Record', () {
-        final result = asRecord2<String, int>(['John', 30]);
-        expect(result, isA<(String, int)>());
-        expect(result.$1, equals('John'));
-        expect(result.$2, equals(30));
-      });
 
-      test('should cast JSON array string to Record', () {
-        final result = asRecord2<double, double>('[10.5, 20.3]');
-        expect(result, isA<(double, double)>());
-        expect(result.$1, equals(10.5));
-        expect(result.$2, equals(20.3));
-      });
-
-      test('should cast formatted string to Record', () {
-        final result = asRecord2<String, String>('(John, Doe)');
-        expect(result, isA<(String, String)>());
-        expect(result.$1, equals('John'));
-        expect(result.$2, equals('Doe'));
-      });
-
-      test('should cast Map to Record', () {
-        final map = {'key1': 'value1', 'key2': 'value2'};
-        final result = asRecord2<String, String>(map);
-        expect(result, isA<(String, String)>());
-        expect(result.$1, equals('value1'));
-        expect(result.$2, equals('value2'));
-      });
-
-      test('should cast with decoders', () {
-        final result = asRecord2<int, bool>(
-          ['42', 'true'],
-          firstDecoder: (e) => asInt(e),
-          secondDecoder: (e) => asBool(e),
-        );
-        expect(result, isA<(int, bool)>());
-        expect(result.$1, equals(42));
-        expect(result.$2, isTrue);
-      });
-
-      test('should return null for tryRecord2 with insufficient elements', () {
-        final result = tryRecord2<String, String>(['only-one']);
-        expect(result, isNull);
-      });
-
-      test('should throw CastException for insufficient elements', () {
-        expect(() => asRecord2<String, String>(['only-one']), 
-               throwsA(isA<CastException>()));
-      });
-    });
 
     group('Extension Methods', () {
       group('String Extensions', () {
@@ -295,50 +245,7 @@ void main() {
         });
       });
 
-      group('Record Extensions', () {
-        test('should swap record elements', () {
-          final record = ('first', 'second');
-          final swapped = record.swap();
-          expect(swapped.$1, equals('second'));
-          expect(swapped.$2, equals('first'));
-        });
 
-        test('should map both elements', () {
-          final record = (1, 2);
-          final result = record.mapBoth<String, String>(
-            (a) => a.toString(),
-            (b) => b.toString(),
-          );
-          expect(result.$1, equals('1'));
-          expect(result.$2, equals('2'));
-        });
-
-        test('should map first element', () {
-          final record = (1, 'second');
-          final result = record.mapFirst<String>((a) => a.toString());
-          expect(result.$1, equals('1'));
-          expect(result.$2, equals('second'));
-        });
-
-        test('should map second element', () {
-          final record = ('first', 2);
-          final result = record.mapSecond<String>((b) => b.toString());
-          expect(result.$1, equals('first'));
-          expect(result.$2, equals('2'));
-        });
-
-        test('should convert to list', () {
-          final record = ('first', 'second');
-          final list = record.toList();
-          expect(list, equals(['first', 'second']));
-        });
-
-        test('should convert to map', () {
-          final record = ('first', 'second');
-          final map = record.toMap();
-          expect(map, equals({'first': 'first', 'second': 'second'}));
-        });
-      });
     });
 
     group('Enhanced Error Handling', () {
@@ -473,7 +380,6 @@ void main() {
         expect(tryList<String>(null), isNull);
         expect(trySet<String>(null), isNull);
         expect(tryMap<String, dynamic>(null), isNull);
-        expect(tryRecord2<String, String>(null), isNull);
       });
 
       test('should throw for null input in as functions', () {

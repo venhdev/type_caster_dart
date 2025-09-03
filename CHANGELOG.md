@@ -3,9 +3,9 @@
 - Added: Full DateTime casting support with pattern options
 - Added: Map<K,V> casting with key/value decoders
 - Added: Set<T> casting with item decoders
-- Added: Record types ((A, B)) casting support
+
 - Enhanced: Null safety across all casters
-- Added: New extension methods for Map, Set, and Record types
+- Added: New extension methods for Map and Set types
 - Enhanced: Error handling with detailed context information
 - Added: Custom type casting registry for application-defined types
 - Improved: Documentation with examples for all new types

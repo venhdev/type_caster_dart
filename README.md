@@ -8,7 +8,7 @@ A lightweight type casting library for Dart with safe conversions and clear erro
 
 ## Features
 
-- **All Dart types**: `int`, `double`, `String`, `bool`, `DateTime`, `List<T>`, `Set<T>`, `Map<K,V>`, Records
+- **All Dart types**: `int`, `double`, `String`, `bool`, `DateTime`, `List<T>`, `Set<T>`, `Map<K,V>`
 - **Simple API**: `tryAs<T>()`, `asString()`, `asInt()`, `"123".asInt()`  
 - **Safe conversions**: Clear error messages with context
 - **Custom types**: Register your own type casters
@@ -62,9 +62,6 @@ final user = asMap<String, dynamic>('{"name":"John","age":30}');
 // DateTime with custom patterns
 final date = asDateTime('2023-10-15');
 final custom = asDateTime('15/10/2023', pattern: 'dd/MM/yyyy');
-
-// Records (tuples)
-final point = asRecord2<double, double>('[10.5, 20.3]');  // (10.5, 20.3)
 ```
 
 ### Error Handling
@@ -124,7 +121,6 @@ final user = tryAs<User>('{"name": "John", "age": 30}');
 - `asMap<K,V>()`, `tryMap<K,V>()` - Map conversion
 
 **Advanced**
-- `asRecord2<A,B>()`, `tryRecord2<A,B>()` - Record pairs
 - `tryAs<T>()` - Generic type casting
 
 ### Extension Methods
@@ -141,7 +137,7 @@ final user = tryAs<User>('{"name": "John", "age": 30}');
 ```dart
 map.get("key")                   // Safe access
 list.firstWhereOrNull(test)      // Safe search
-record.swap()                    // (b, a) from (a, b)
+set.mapCast((e) => e.toString()) // Transform Set elements
 ```
 
 

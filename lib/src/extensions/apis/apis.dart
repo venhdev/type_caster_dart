@@ -11,4 +11,3 @@ part 'date_time_api.dart';
 part 'list_api.dart';
 part 'map_api.dart';
 part 'set_api.dart';
-part 'record_api.dart';
