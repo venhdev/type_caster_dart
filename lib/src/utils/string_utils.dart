@@ -17,8 +17,7 @@ String truncate(
     case TruncatePosition.start:
       final availableLength = maxLength - omission.length;
       if (availableLength <= 0) return omission;
-      return omission +
-          text.substring(text.length - availableLength);
+      return omission + text.substring(text.length - availableLength);
     case TruncatePosition.end:
       final availableLength = maxLength - omission.length;
       if (availableLength <= 0) return omission;

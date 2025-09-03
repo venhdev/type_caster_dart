@@ -7,7 +7,7 @@ class CastException implements Exception {
 
   /// Source value that failed to be cast
   final dynamic src;
-  
+
   /// Target type name that the source failed to be cast to
   final String dst;
 
@@ -16,15 +16,15 @@ class CastException implements Exception {
 
   /// Optional inner exception that caused the cast failure
   final Object? innerException;
-  
+
   /// Optional stack trace where the cast operation failed
   final StackTrace? stackTrace;
-  
+
   /// Optional context information about where/why the cast was attempted
   final String? context;
 
   /// Creates a new [CastException] with detailed information about the failed cast.
-  /// 
+  ///
   /// - [src]: The source value that failed to be cast
   /// - [dst]: The target type name
   /// - [message]: Optional message explaining the failure
@@ -33,7 +33,7 @@ class CastException implements Exception {
   /// - [stackTrace]: Optional stack trace where the failure occurred
   /// - [context]: Optional context information
   CastException(
-    this.src, 
+    this.src,
     this.dst, {
     this.message,
     this.innerException,
@@ -47,7 +47,7 @@ class CastException implements Exception {
   String toString() {
     final srcTypeStr = srcType ?? src?.runtimeType.toString() ?? 'null';
     final buffer = StringBuffer('Cannot cast $srcTypeStr to $dst');
-    
+
     if (message != null) buffer.write(' | Message: $message');
     if (src != null) {
       // Format source value representation based on its type
@@ -61,17 +61,17 @@ class CastException implements Exception {
       }
       buffer.write(' | Source: $srcStr');
     }
-    
+
     if (context != null) buffer.write(' | Context: $context');
     if (innerException != null) buffer.write(' | Inner: $innerException');
-    
+
     return buffer.toString().red.toString();
   }
-  
+
   /// Creates a new [CastException] with a more specific message.
   CastException withMessage(String newMessage) {
     return CastException(
-      src, 
+      src,
       dst,
       message: newMessage,
       innerException: innerException,
@@ -80,11 +80,11 @@ class CastException implements Exception {
       context: context,
     );
   }
-  
+
   /// Creates a new [CastException] with additional context information.
   CastException withContext(String newContext) {
     return CastException(
-      src, 
+      src,
       dst,
       message: message,
       innerException: innerException,

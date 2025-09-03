@@ -36,10 +36,10 @@ T? tryAs<T>(
 }) {
   try {
     if (src is T) return src;
-    
+
     // Use provided caster if available
     if (caster != null) return caster(src);
-    
+
     // Try using registered custom caster
     final registry = TypeCasterRegistry.instance;
     if (registry.hasCustomCaster<T>()) {
@@ -49,7 +49,7 @@ T? tryAs<T>(
         // Fall through to orElse
       }
     }
-    
+
     return orElse?.call();
   } catch (_) {
     return null;
@@ -78,10 +78,11 @@ List<T>? tryList<T>(
       itemDecoder: itemDecoder,
       separator: separator,
     );
-    
-DateTime? tryDateTime(dynamic val, {DateTime Function()? orElse, String? pattern}) =>
+
+DateTime? tryDateTime(dynamic val,
+        {DateTime Function()? orElse, String? pattern}) =>
     DateTimeCaster().tryCast(val, orElse: orElse, pattern: pattern);
-    
+
 Map<K, V>? tryMap<K, V>(
   dynamic val, {
   Map<K, V> Function()? orElse,
@@ -94,7 +95,7 @@ Map<K, V>? tryMap<K, V>(
       keyDecoder: keyDecoder,
       valueDecoder: valueDecoder,
     );
-    
+
 Set<T>? trySet<T>(
   dynamic val, {
   Set<T> Function()? orElse,
@@ -107,8 +108,6 @@ Set<T>? trySet<T>(
       itemDecoder: itemDecoder,
       separator: separator,
     );
-
-
 
 String asString(dynamic val, {String Function()? orElse}) =>
     StringCaster().cast(val, orElse: orElse);
@@ -132,10 +131,11 @@ List<T> asList<T>(
       itemDecoder: itemDecoder,
       separator: separator,
     );
-    
-DateTime asDateTime(dynamic val, {DateTime Function()? orElse, String? pattern}) =>
+
+DateTime asDateTime(dynamic val,
+        {DateTime Function()? orElse, String? pattern}) =>
     DateTimeCaster().cast(val, orElse: orElse, pattern: pattern);
-    
+
 Map<K, V> asMap<K, V>(
   dynamic val, {
   Map<K, V> Function()? orElse,
@@ -148,7 +148,7 @@ Map<K, V> asMap<K, V>(
       keyDecoder: keyDecoder,
       valueDecoder: valueDecoder,
     );
-    
+
 Set<T> asSet<T>(
   dynamic val, {
   Set<T> Function()? orElse,
@@ -161,8 +161,6 @@ Set<T> asSet<T>(
       itemDecoder: itemDecoder,
       separator: separator,
     );
-    
-
 
 abstract interface class Castable<T> {
   T cast(dynamic value, {T Function()? orElse});
@@ -176,7 +174,7 @@ abstract class TypeCaster<T> implements Castable<T> {
   ///
   /// Throws a [CastException] if the value cannot be cast to the type [T].
   /// If [orElse] is provided, its result is returned instead of throwing an exception.
-  /// 
+  ///
   /// If the value is null and T is nullable, returns null.
   /// If the value is null and T is not nullable, throws a [CastException] or returns orElse.
   @override
@@ -186,7 +184,7 @@ abstract class TypeCaster<T> implements Castable<T> {
   ///
   /// Returns null if the value cannot be cast to the type [T].
   /// If [orElse] is provided, its result is returned instead of null.
-  /// 
+  ///
   /// Safely handles null values by returning null if the value is null
   /// (regardless of whether T is nullable).
   @override
@@ -202,20 +200,21 @@ abstract class TypeCaster<T> implements Castable<T> {
       }
     }
   }
-  
+
   /// Helper method to check if a value is null and handle it appropriately.
   ///
   /// If the value is null, either throws a [CastException] or returns the result of [orElse].
   /// This method helps enforce null safety in casters.
   ///
   /// Returns true if the value is not null, false otherwise.
-  bool _checkNull(dynamic value, {T Function()? orElse, String? typeName, String? context}) {
+  bool _checkNull(dynamic value,
+      {T Function()? orElse, String? typeName, String? context}) {
     if (value == null) {
       if (orElse != null) {
         return false;
       }
       throw CastException(
-        null, 
+        null,
         typeName ?? T.toString(),
         message: 'Cannot cast null to non-nullable type',
         context: context ?? '$runtimeType._checkNull',
@@ -240,7 +239,7 @@ class NumberCaster extends TypeCaster<num> {
       if (value.isEmpty) {
         throw CastException(value, 'num', srcType: 'empty string');
       }
-      
+
       final number = num.tryParse(value);
       if (number == null) {
         throw CastException(value, 'num');
@@ -325,7 +324,7 @@ class StringCaster extends TypeCaster<String> {
       if (!_checkNull(value, orElse: orElse, typeName: 'String')) {
         return orElse!();
       }
-      
+
       return stringify(value);
     } catch (e) {
       if (orElse != null) return orElse();
@@ -346,16 +345,16 @@ class BoolCaster extends TypeCaster<bool> {
       if (!_checkNull(value, orElse: orElse, typeName: 'bool')) {
         return orElse!();
       }
-      
+
       if (value is bool) {
         return value;
       } else if (value is String) {
         final lowerCaseValue = value.toLowerCase();
         if (lowerCaseValue == 'true') return true;
         if (lowerCaseValue == 'false') return false;
-        
+
         throw CastException(
-          value, 
+          value,
           'bool',
           message: 'String value must be either "true" or "false"',
           context: 'BoolCaster.cast',
@@ -366,14 +365,15 @@ class BoolCaster extends TypeCaster<bool> {
             : value == 0
                 ? false
                 : throw CastException(
-                    value, 
+                    value,
                     'bool',
-                    message: 'Integer value must be either 0 (false) or 1 (true)',
+                    message:
+                        'Integer value must be either 0 (false) or 1 (true)',
                     context: 'BoolCaster.cast',
                   );
       } else {
         throw CastException(
-          value, 
+          value,
           'bool',
           message: 'Cannot convert ${value.runtimeType} to bool',
           context: 'BoolCaster.cast',
@@ -500,7 +500,8 @@ class MapCaster<K, V> extends TypeCaster<Map<K, V>> {
         final result = <K, V>{};
         value.forEach((key, val) {
           final K newKey = keyDecoder != null ? keyDecoder(key) : key as K;
-          final V newValue = valueDecoder != null ? valueDecoder(val) : val as V;
+          final V newValue =
+              valueDecoder != null ? valueDecoder(val) : val as V;
           result[newKey] = newValue;
         });
         return result;
@@ -596,7 +597,7 @@ class SetCaster<T> extends TypeCaster<Set<T>> {
         if (trimmed.isEmpty) {
           throw CastException(value, 'Set<$T>', srcType: 'empty string');
         }
-        
+
         // Handle JSON array string
         if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
           try {
@@ -610,7 +611,7 @@ class SetCaster<T> extends TypeCaster<Set<T>> {
             return items.map((e) => itemDecoder(e)).toSet();
           }
         }
-        
+
         // Split regular string by separator
         final items = value.split(separator).map((e) => e.trim()).toList();
         if (itemDecoder == null) return items.cast<T>().toSet();
@@ -649,11 +650,10 @@ class SetCaster<T> extends TypeCaster<Set<T>> {
   }
 }
 
-
-
 class DateTimeCaster extends TypeCaster<DateTime> {
   @override
-  DateTime call(dynamic value, {DateTime Function()? orElse, String? pattern}) =>
+  DateTime call(dynamic value,
+          {DateTime Function()? orElse, String? pattern}) =>
       cast(value, orElse: orElse, pattern: pattern);
 
   @override
@@ -666,7 +666,7 @@ class DateTimeCaster extends TypeCaster<DateTime> {
         if (value.isEmpty) {
           throw CastException(value, 'DateTime', srcType: 'empty string');
         }
-        
+
         DateTime? dateTime;
         if (pattern != null) {
           try {
@@ -677,11 +677,11 @@ class DateTimeCaster extends TypeCaster<DateTime> {
         } else {
           dateTime = DateTime.tryParse(value);
         }
-        
+
         if (dateTime != null) {
           return dateTime;
         }
-        
+
         throw CastException(value, 'DateTime');
       } else if (value is int) {
         // Assuming milliseconds since epoch
@@ -696,7 +696,8 @@ class DateTimeCaster extends TypeCaster<DateTime> {
   }
 
   @override
-  DateTime? tryCast(dynamic value, {DateTime Function()? orElse, String? pattern}) {
+  DateTime? tryCast(dynamic value,
+      {DateTime Function()? orElse, String? pattern}) {
     try {
       if (value == null) return null;
       return cast(value, orElse: orElse, pattern: pattern);

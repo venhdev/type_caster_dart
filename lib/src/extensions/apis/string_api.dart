@@ -28,7 +28,7 @@ extension StringApi on String {
         itemDecoder: itemDecoder,
         separator: separator,
       );
-      
+
   Set<T> asSet<T>(
           [Set<T> Function()? orElse,
           T Function(dynamic)? itemDecoder,
@@ -39,7 +39,7 @@ extension StringApi on String {
         itemDecoder: itemDecoder,
         separator: separator,
       );
-      
+
   Map<K, V> asMap<K, V>(
           [Map<K, V> Function()? orElse,
           K Function(dynamic)? keyDecoder,
@@ -50,7 +50,7 @@ extension StringApi on String {
         keyDecoder: keyDecoder,
         valueDecoder: valueDecoder,
       );
-      
+
   DateTime asDateTime([DateTime Function()? orElse, String? pattern]) =>
       core.asDateTime(this, orElse: orElse, pattern: pattern);
 
@@ -70,7 +70,7 @@ extension StringApi on String {
         itemDecoder: itemDecoder,
         separator: separator,
       );
-      
+
   Set<T>? trySet<T>(
           [Set<T> Function()? orElse,
           T Function(dynamic)? itemDecoder,
@@ -81,7 +81,7 @@ extension StringApi on String {
         itemDecoder: itemDecoder,
         separator: separator,
       );
-      
+
   Map<K, V>? tryMap<K, V>(
           [Map<K, V> Function()? orElse,
           K Function(dynamic)? keyDecoder,
@@ -92,7 +92,7 @@ extension StringApi on String {
         keyDecoder: keyDecoder,
         valueDecoder: valueDecoder,
       );
-      
+
   DateTime? tryDateTime([DateTime Function()? orElse, String? pattern]) =>
       core.tryDateTime(this, orElse: orElse, pattern: pattern);
 }

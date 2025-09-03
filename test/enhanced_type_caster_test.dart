@@ -11,16 +11,16 @@ class User {
   User({required this.name, required this.age, this.birthDate});
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-    name: asString(json['name']),
-    age: asInt(json['age']),
-    birthDate: tryDateTime(json['birthDate']),
-  );
+        name: asString(json['name']),
+        age: asInt(json['age']),
+        birthDate: tryDateTime(json['birthDate']),
+      );
 
   Map<String, dynamic> toJson() => {
-    'name': name,
-    'age': age,
-    if (birthDate != null) 'birthDate': birthDate!.toIso8601String(),
-  };
+        'name': name,
+        'age': age,
+        if (birthDate != null) 'birthDate': birthDate!.toIso8601String(),
+      };
 
   @override
   bool operator ==(Object other) =>
@@ -40,7 +40,6 @@ class User {
 
 void main() {
   group('Enhanced Type Caster Tests', () {
-    
     group('DateTime Casting', () {
       test('should cast ISO string to DateTime', () {
         final result = asDateTime('2023-10-15T10:30:00Z');
@@ -69,7 +68,8 @@ void main() {
       test('should cast milliseconds since epoch', () {
         final now = DateTime.now();
         final result = asDateTime(now.millisecondsSinceEpoch);
-        expect(result.millisecondsSinceEpoch, equals(now.millisecondsSinceEpoch));
+        expect(
+            result.millisecondsSinceEpoch, equals(now.millisecondsSinceEpoch));
       });
 
       test('should return null for tryDateTime with invalid input', () {
@@ -115,7 +115,8 @@ void main() {
       });
 
       test('should throw CastException for invalid input', () {
-        expect(() => asMap<String, dynamic>(123), throwsA(isA<CastException>()));
+        expect(
+            () => asMap<String, dynamic>(123), throwsA(isA<CastException>()));
       });
 
       test('should handle empty string', () {
@@ -159,8 +160,6 @@ void main() {
       });
     });
 
-
-
     group('Extension Methods', () {
       group('String Extensions', () {
         test('should convert string to types using extensions', () {
@@ -180,7 +179,8 @@ void main() {
 
         test('should cast to Set and Map using extensions', () {
           expect('a,b,c'.asSet<String>(), equals({'a', 'b', 'c'}));
-          expect('{"key":"value"}'.asMap<String, dynamic>()['key'], equals('value'));
+          expect('{"key":"value"}'.asMap<String, dynamic>()['key'],
+              equals('value'));
         });
       });
 
@@ -200,7 +200,8 @@ void main() {
         test('should use getOrElse', () {
           final map = {'key': 'value'};
           expect(map.getOrElse('key', () => 'computed'), equals('value'));
-          expect(map.getOrElse('missing', () => 'computed'), equals('computed'));
+          expect(
+              map.getOrElse('missing', () => 'computed'), equals('computed'));
         });
 
         test('should cast values', () {
@@ -226,7 +227,8 @@ void main() {
 
         test('should find first matching element or null', () {
           final set = {'apple', 'banana', 'cherry'};
-          expect(set.firstWhereOrNull((e) => e.startsWith('b')), equals('banana'));
+          expect(
+              set.firstWhereOrNull((e) => e.startsWith('b')), equals('banana'));
           expect(set.firstWhereOrNull((e) => e.startsWith('z')), isNull);
         });
 
@@ -244,8 +246,6 @@ void main() {
           expect(set.join(', '), contains('c'));
         });
       });
-
-
     });
 
     group('Enhanced Error Handling', () {
@@ -256,7 +256,8 @@ void main() {
         } catch (e) {
           expect(e, isA<CastException>());
           final castException = e as CastException;
-          expect(castException.toString(), contains('String value must be either "true" or "false"'));
+          expect(castException.toString(),
+              contains('String value must be either "true" or "false"'));
           expect(castException.toString(), contains('BoolCaster.cast'));
           expect(castException.toString(), contains('"invalid"'));
         }
@@ -279,19 +280,22 @@ void main() {
         } catch (e) {
           expect(e, isA<CastException>());
           final castException = e as CastException;
-          expect(castException.toString(), contains('Cannot cast null to non-nullable type'));
+          expect(castException.toString(),
+              contains('Cannot cast null to non-nullable type'));
         }
       });
 
       test('should create exceptions with additional context', () {
-        final exception = CastException('source', 'target', message: 'test message');
+        final exception =
+            CastException('source', 'target', message: 'test message');
         final withContext = exception.withContext('additional context');
         expect(withContext.context, equals('additional context'));
         expect(withContext.message, equals('test message'));
       });
 
       test('should create exceptions with new message', () {
-        final exception = CastException('source', 'target', message: 'original');
+        final exception =
+            CastException('source', 'target', message: 'original');
         final withMessage = exception.withMessage('new message');
         expect(withMessage.message, equals('new message'));
         expect(withMessage.src, equals('source'));
@@ -352,7 +356,7 @@ void main() {
       test('should unregister custom caster', () {
         TypeCasterRegistry.instance.unregister<User>();
         expect(TypeCasterRegistry.instance.hasCustomCaster<User>(), isFalse);
-        
+
         // Re-register for tearDown
         TypeCasterRegistry.instance.register<User>((value, {orElse}) {
           throw CastException(value, 'User');
@@ -362,7 +366,7 @@ void main() {
       test('should clear all custom casters', () {
         TypeCasterRegistry.instance.clear();
         expect(TypeCasterRegistry.instance.hasCustomCaster<User>(), isFalse);
-        
+
         // Re-register for tearDown
         TypeCasterRegistry.instance.register<User>((value, {orElse}) {
           throw CastException(value, 'User');
@@ -407,7 +411,8 @@ void main() {
       test('should handle boundary values', () {
         expect(asInt('2147483647'), equals(2147483647)); // Max int
         expect(asInt('-2147483648'), equals(-2147483648)); // Min int
-        expect(asDouble('1.7976931348623157e+308'), isA<double>()); // Max double
+        expect(
+            asDouble('1.7976931348623157e+308'), isA<double>()); // Max double
       });
 
       test('should handle special boolean values', () {
@@ -424,12 +429,13 @@ void main() {
         final listResult = tryList<String>('{"not": "an array"}');
         expect(listResult, isNotNull);
         expect(listResult!.length, equals(1));
-        
+
         // MapCaster should return null for non-object JSON
         expect(tryMap<String, dynamic>('["not", "an", "object"]'), isNull);
-        
+
         // Both should return null for completely malformed JSON
-        expect(tryList<String>('invalid json'), isNotNull); // Treats as single item
+        expect(tryList<String>('invalid json'),
+            isNotNull); // Treats as single item
         expect(tryMap<String, dynamic>('invalid json'), isNull);
       });
     });
@@ -438,7 +444,7 @@ void main() {
       test('should handle large collections efficiently', () {
         final largeList = List.generate(1000, (i) => i.toString());
         final csvString = largeList.join(',');
-        
+
         final result = asList<String>(csvString);
         expect(result.length, equals(1000));
         expect(result[0], equals('0'));
@@ -448,12 +454,10 @@ void main() {
       test('should handle deeply nested maps', () {
         final nested = {
           'level1': {
-            'level2': {
-              'level3': 'deep value'
-            }
+            'level2': {'level3': 'deep value'}
           }
         };
-        
+
         final result = asMap<String, dynamic>(json.encode(nested));
         expect(result['level1']['level2']['level3'], equals('deep value'));
       });
