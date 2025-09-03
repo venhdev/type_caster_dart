@@ -1,0 +1,14 @@
+name: type_caster_example
+description: Example showing how to use the type_caster package
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  type_caster:
+    path: ../
+
+dev_dependencies:
+  lints: ^4.0.0
