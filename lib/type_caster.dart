@@ -3,6 +3,7 @@ library type_caster;
 // core
 export 'src/core/caster_core.dart';
 export 'src/core/types.dart';
+export 'src/core/type_registry.dart';
 export 'src/error/errors.dart';
 export 'src/error/exceptions.dart';
 // extensions

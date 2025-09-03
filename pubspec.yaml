@@ -1,19 +1,15 @@
 name: type_caster
 description: A powerful type casting and conversion library for Dart that provides safe and flexible type conversion utilities.
-version: 0.0.8+8
+version: 0.1.0
 repository: https://github.com/venhdev/type_caster_dart
 homepage: https://github.com/venhdev/type_caster_dart
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
 
-# Add regular dependencies here.
 dependencies:
   intl: ^0.19.0
 
 dev_dependencies:
   lints: ^4.0.0
   test: ^1.24.0
-
-# For more information about pubspec.yaml, see:
-# https://dart.dev/tools/pub/pubspec

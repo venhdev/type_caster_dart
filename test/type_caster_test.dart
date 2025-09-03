@@ -53,6 +53,7 @@ void main() {
 
   test('simple', () {
     final Object value = '123';
+    final Object emptyStr = '';
 
     // Cast to int using global function
     final int? number = tryInt(value);
@@ -68,6 +69,23 @@ void main() {
       print(rs);
     } on CastException catch (e) {
       print('Failed to cast: ${e.message}');
+    }
+
+    // Tests with emptyStr
+    final int? emptyInt = tryInt(emptyStr);
+    print(emptyInt); // null
+    expect(emptyInt, isNull);
+
+    final double emptyDouble = asDouble(emptyStr, orElse: () => -1.0);
+    print(emptyDouble); // -1.0
+    expect(emptyDouble, -1.0);
+
+    try {
+      final bool emptyBool = asBool(emptyStr);
+      print(emptyBool);
+      fail('Expected CastException for emptyStr asBool');
+    } on CastException catch (e) {
+      print('Failed to cast emptyStr: ${e.message}');
     }
   });
 }

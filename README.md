@@ -4,12 +4,14 @@
 [![Build Status](https://img.shields.io/github/actions/workflow/status/venhdev/type_caster_dart/ci.yml?branch=main&style=flat-square)](https://github.com/venhdev/type_caster_dart/actions)
 [![Code Coverage](https://img.shields.io/badge/Coverage-80%25%2B-brightgreen?style=flat-square)](https://github.com/venhdev/type_caster_dart/actions)
 
-A lightweight and safe type casting library for Dart that provides flexible type conversion utilities with clear error handling.
+A lightweight type casting library for Dart with safe conversions and clear error handling.
 
 ## Features
 
-- Support for common Dart types: `int`, `double`, `String`, `bool`, `List`, `Set`
-- Global casting functions: `tryAs<T>()`, `asString()`, `asInt()`, etc.
+- **All Dart types**: `int`, `double`, `String`, `bool`, `DateTime`, `List<T>`, `Set<T>`, `Map<K,V>`, Records
+- **Simple API**: `tryAs<T>()`, `asString()`, `asInt()`, `"123".asInt()`  
+- **Safe conversions**: Clear error messages with context
+- **Custom types**: Register your own type casters
 
 ## Installation
 
@@ -17,130 +19,132 @@ Add `type_caster` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  type_caster: ^0.0.4
+  type_caster: ^0.1.0
 ```
 
-Then run:
-
 ```bash
-flutter pub get
-# or
-# dart pub get
+dart pub get
 ```
 
 ## Usage
 
-### Basic Type Casting
+### Quick Start
 
 ```dart
 import 'package:type_caster/type_caster.dart';
 
-void main() {
-  final Object? value = '123';
+// Safe conversions with null return on failure
+final int? number = tryInt('123');        // 123
+final bool? flag = tryBool('invalid');    // null
 
-  // Using global functions
-  final int? number = tryInt(value);     // Returns: 123
-  final String text = asString(value);    // Returns: "123"
-  
-  // With fallback values using orElse
-  final bool flag = asBool(value, orElse: () => false);  // Returns: false
-  
-  // Error handling
-  try {
-    final bool result = asBool('not-a-bool');
-  } on CastException catch (e) {
-    print(e.toString()); // "Cannot cast String to bool | Source: not-a-bool"
-  }
-}
+// Direct conversions with exception on failure  
+final String text = asString(123);        // "123"
+final double price = asDouble('99.99');   // 99.99
+
+// Extension methods for fluent API
+final int count = "42".asInt();           // 42
+final bool isActive = "true".asBool();    // true
 ```
 
-### List Conversion
+### Collections & Complex Types
 
 ```dart
-import 'package:type_caster/type_caster.dart';
+// Lists from various sources
+final numbers = asList<int>('[1,2,3]');           // [1, 2, 3]
+final items = "a,b,c".asList<String>();           // ["a", "b", "c"]
 
-void main() {
-  // From JSON array string
-  final numbers = asList<int>('[1,2,3]', itemDecoder: (e) => asInt(e));
-  print(numbers); // [1, 2, 3]
-  
-  // From comma-separated string
-  final items = asList<String>('a,b,c');
-  print(items); // ["a", "b", "c"]
-  
-  // From Set to List
-  final set = {'1', '2', '3'};
-  final list = asList<String>(set);
-  print(list); // ["1", "2", "3"]
-}
+// Sets (unique values)
+final tags = asSet<String>('red,blue,red');       // {"red", "blue"}
+
+// Maps from JSON strings
+final user = asMap<String, dynamic>('{"name":"John","age":30}');
+
+// DateTime with custom patterns
+final date = asDateTime('2023-10-15');
+final custom = asDateTime('15/10/2023', pattern: 'dd/MM/yyyy');
+
+// Records (tuples)
+final point = asRecord2<double, double>('[10.5, 20.3]');  // (10.5, 20.3)
 ```
 
-### Custom Caster Example
+### Error Handling
+
+```dart
+try {
+  final result = asBool('invalid');
+} catch (e) {
+  print(e); 
+  // Cannot cast String to bool | Message: String value must be either "true" or "false" | Source: "invalid"
+}
+
+// Safe with fallback
+final flag = asBool('invalid', orElse: () => false);  // false
+```
+
+### Custom Types
+
+Register casters for your own classes:
 
 ```dart
 class User {
-  final String? name;
-  final int? age;
-
+  final String name;
+  final int age;
   User({required this.name, required this.age});
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      name: tryString(json['name']),
-      age: tryInt(json['age']),
-    );
-  }
+  factory User.fromJson(Map<String, dynamic> json) => User(
+    name: asString(json['name']),
+    age: asInt(json['age']),
+  );
 }
+
+// Register the caster
+TypeCasterRegistry.instance.register<User>((value, {orElse}) {
+  if (value is Map<String, dynamic>) return User.fromJson(value);
+  if (value is String) return User.fromJson(json.decode(value));
+  throw CastException(value, 'User');
+});
+
+// Now use it anywhere
+final user = tryAs<User>('{"name": "John", "age": 30}');
 ```
 
 ## API Reference
 
-### Global Functions
+### Core Functions
 
-#### Type Casting
+**Basic Types**
+- `asString()`, `tryString()` - String conversion
+- `asInt()`, `tryInt()` - Integer conversion  
+- `asDouble()`, `tryDouble()` - Double conversion
+- `asBool()`, `tryBool()` - Boolean conversion
+- `asDateTime()`, `tryDateTime()` - DateTime conversion
 
-Note: The parsing utilities (`tryParse*` and `parse*` methods) are aliases for the corresponding global functions in `caster_core.dart`, providing a more explicit way to parse various types.
+**Collections**
+- `asList<T>()`, `tryList<T>()` - List conversion
+- `asSet<T>()`, `trySet<T>()` - Set conversion
+- `asMap<K,V>()`, `tryMap<K,V>()` - Map conversion
 
-- `T? tryAs<T>(dynamic src, {T? Function()? orElse})`: Generic type casting
-- `String asString(dynamic val, {String Function()? orElse})`
-- `String? tryString(dynamic val, {String Function()? orElse})`
-- `num asNum(dynamic val, {num Function()? orElse})`
-- `num? tryNum(dynamic val, {num Function()? orElse})`
-- `int asInt(dynamic val, {int Function()? orElse})`
-- `int? tryInt(dynamic val, {int Function()? orElse})`
-- `double asDouble(dynamic val, {double Function()? orElse})`
-- `double? tryDouble(dynamic val, {double Function()? orElse})`
-- `bool asBool(dynamic val, {bool Function()? orElse})`
-- `bool? tryBool(dynamic val, {bool Function()? orElse})`
+**Advanced**
+- `asRecord2<A,B>()`, `tryRecord2<A,B>()` - Record pairs
+- `tryAs<T>()` - Generic type casting
 
-#### List Operations
+### Extension Methods
 
-- `List<T> asList<T>(dynamic val, {List<T> Function()? orElse, T Function(dynamic)? itemDecoder, String separator = ','})`
-- `List<T>? tryList<T>(dynamic val, {List<T> Function()? orElse, T Function(dynamic)? itemDecoder, String separator = ','})`
+**String Extensions**
+```dart
+"123".asInt()                    // 123
+"true".asBool()                  // true  
+"a,b,c".asList<String>()         // ["a", "b", "c"]
+"2023-01-01".asDateTime()        // DateTime object
+```
 
-#### Parsing Utilities
+**Collection Extensions**
+```dart
+map.get("key")                   // Safe access
+list.firstWhereOrNull(test)      // Safe search
+record.swap()                    // (b, a) from (a, b)
+```
 
-- `String? tryParseString(dynamic value, {String Function()? orElse})`
-- `String parseString(dynamic value, {String Function()? orElse})`
-- `num? tryParseNum(dynamic value, {num Function()? orElse})`
-- `num parseNum(dynamic value, {num Function()? orElse})`
-- `int? tryParseInt(dynamic value, {int Function()? orElse})`
-- `int parseInt(dynamic value, {int Function()? orElse})`
-- `double? tryParseDouble(dynamic value, {double Function()? orElse})`
-- `double parseDouble(dynamic value, {double Function()? orElse})`
-- `bool? tryParseBool(dynamic value, {bool Function()? orElse})`
-- `bool parseBool(dynamic value, {bool Function()? orElse})`
-- `List<T>? tryParseList<T>(dynamic value, {List<T> Function()? orElse, T Function(dynamic)? itemDecoder, String separator = ','})`
-- `List<T> parseList<T>(dynamic value, {List<T> Function()? orElse, T Function(dynamic)? itemDecoder, String separator = ','})`
 
-### Error Handling
-
-The library uses `CastException` for error handling, providing:
-- Source value and type information
-- Target type information
-- Optional custom message
-- Optional inner exception
-- Colorized error output
 
 ## Contributing
 

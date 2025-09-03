@@ -15,10 +15,14 @@ String truncate(
   }
   switch (position) {
     case TruncatePosition.start:
+      final availableLength = maxLength - omission.length;
+      if (availableLength <= 0) return omission;
       return omission +
-          text.substring(text.length - maxLength + omission.length);
+          text.substring(text.length - availableLength);
     case TruncatePosition.end:
-      return text.substring(0, maxLength - omission.length) + omission;
+      final availableLength = maxLength - omission.length;
+      if (availableLength <= 0) return omission;
+      return text.substring(0, availableLength) + omission;
   }
 }
 

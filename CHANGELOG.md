@@ -1,3 +1,15 @@
+## [0.1.0]
+
+- Added: Full DateTime casting support with pattern options
+- Added: Map<K,V> casting with key/value decoders
+- Added: Set<T> casting with item decoders
+- Added: Record types ((A, B)) casting support
+- Enhanced: Null safety across all casters
+- Added: New extension methods for Map, Set, and Record types
+- Enhanced: Error handling with detailed context information
+- Added: Custom type casting registry for application-defined types
+- Improved: Documentation with examples for all new types
+
 ## [0.0.7+7]
 
 - Enhanced: `List` casting now applies `itemDecoder` when provided.

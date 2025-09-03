@@ -28,6 +28,31 @@ extension StringApi on String {
         itemDecoder: itemDecoder,
         separator: separator,
       );
+      
+  Set<T> asSet<T>(
+          [Set<T> Function()? orElse,
+          T Function(dynamic)? itemDecoder,
+          String separator = ',']) =>
+      core.asSet(
+        this,
+        orElse: orElse,
+        itemDecoder: itemDecoder,
+        separator: separator,
+      );
+      
+  Map<K, V> asMap<K, V>(
+          [Map<K, V> Function()? orElse,
+          K Function(dynamic)? keyDecoder,
+          V Function(dynamic)? valueDecoder]) =>
+      core.asMap(
+        this,
+        orElse: orElse,
+        keyDecoder: keyDecoder,
+        valueDecoder: valueDecoder,
+      );
+      
+  DateTime asDateTime([DateTime Function()? orElse, String? pattern]) =>
+      core.asDateTime(this, orElse: orElse, pattern: pattern);
 
   num? tryNum([num Function()? orElse]) => core.tryNum(this, orElse: orElse);
   int? tryInt([int Function()? orElse]) => core.tryInt(this, orElse: orElse);
@@ -45,4 +70,29 @@ extension StringApi on String {
         itemDecoder: itemDecoder,
         separator: separator,
       );
+      
+  Set<T>? trySet<T>(
+          [Set<T> Function()? orElse,
+          T Function(dynamic)? itemDecoder,
+          String separator = ',']) =>
+      core.trySet(
+        this,
+        orElse: orElse,
+        itemDecoder: itemDecoder,
+        separator: separator,
+      );
+      
+  Map<K, V>? tryMap<K, V>(
+          [Map<K, V> Function()? orElse,
+          K Function(dynamic)? keyDecoder,
+          V Function(dynamic)? valueDecoder]) =>
+      core.tryMap(
+        this,
+        orElse: orElse,
+        keyDecoder: keyDecoder,
+        valueDecoder: valueDecoder,
+      );
+      
+  DateTime? tryDateTime([DateTime Function()? orElse, String? pattern]) =>
+      core.tryDateTime(this, orElse: orElse, pattern: pattern);
 }
