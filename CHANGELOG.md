@@ -1,3 +1,7 @@
+## [0.1.1]
+
+- Fixed: MappedListIterable JSON serialization error in stringify/indentJson functions
+
 ## [0.1.0]
 
 - Added: Full DateTime casting support with pattern options

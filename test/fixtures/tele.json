@@ -1,0 +1,26 @@
+{
+    "ok": true,
+    "result": {
+        "message_id": 6,
+        "from": {
+            "id": 8337409194,
+            "is_bot": true,
+            "first_name": "CDS Inspector Bot",
+            "username": "cds_inspector_bot"
+        },
+        "chat": {
+            "id": -4862685206,
+            "title": "CDS API Report",
+            "type": "group",
+            "all_members_are_administrators": true,
+            "accepted_gift_types": {
+                "unlimited_gifts": false,
+                "limited_gifts": false,
+                "unique_gifts": false,
+                "premium_subscription": false
+            }
+        },
+        "date": 1757345933,
+        "text": "Congratulations!!!"
+    }
+}
