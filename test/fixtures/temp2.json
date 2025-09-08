@@ -1,0 +1,81 @@
+{
+    "data": {
+        "id": 605,
+        "code": "CONFIG-SYSTEM-DMS",
+        "slug": "cau-hinh-vieng-tham-dms",
+        "name": "Cấu hình viếng thăm DMS",
+        "value": null,
+        "description": null,
+        "meta_title": null,
+        "meta_robot": null,
+        "meta_keyword": null,
+        "meta_description": null,
+        "meta_image": null,
+        "meta_image_alt": null,
+        "publish": 0,
+        "type": null,
+        "data": [
+            {
+                "key": "check-in-des",
+                "name": "Khoản cách khi check-in",
+                "status": "0",
+                "type": "TEXT",
+                "value": "200",
+                "type_url": "",
+                "display": [],
+                "route_name": "",
+                "route_slug": "",
+                "array": []
+            },
+            {
+                "key": "number-image-ckn",
+                "name": "Số ảnh checkin",
+                "status": "0",
+                "type": "TEXT",
+                "value": "1,6",
+                "type_url": "",
+                "display": [],
+                "route_name": "",
+                "route_slug": "",
+                "array": []
+            },
+            {
+                "key": "time-min-checkin",
+                "name": "Thời gian tối thiểu tại điểm bán (Phút)",
+                "status": "0",
+                "type": "TEXT",
+                "value": "2",
+                "type_url": "",
+                "display": [],
+                "route_name": "",
+                "route_slug": "",
+                "array": []
+            },
+            {
+                "key": "auto-check-location",
+                "name": "Duyệt tự động Yêu cầu cập nhật tọa độ",
+                "status": "1",
+                "type": "TEXT",
+                "value": "1",
+                "type_url": "",
+                "display": [],
+                "route_name": "",
+                "route_slug": "",
+                "array": []
+            }
+        ],
+        "categories": [],
+        "data_cke": null,
+        "store_id": "88",
+        "store_code": "SMAC",
+        "store_name": "SMAC",
+        "company_id": 62,
+        "company_code": "SMAC",
+        "company_name": "CÔNG TY DEMO",
+        "is_active": 1,
+        "updated_at": "18-07-2025",
+        "lang": "vi",
+        "lang_name": "Tiếng Việt",
+        "is_ref": null
+    }
+}

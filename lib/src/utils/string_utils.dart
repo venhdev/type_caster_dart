@@ -45,7 +45,8 @@ String indentJson(
   try {
     final truncated = maxStringLength != null
         ? truncateInnerString(data, maxStringLength)
-        : _convertIterablesToLists(data);
+        : data;
+    // : _convertIterablesToLists(data);
     final encoder = JsonEncoder.withIndent(indent);
     return encoder.convert(truncated);
   } catch (e) {
