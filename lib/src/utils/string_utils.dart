@@ -46,29 +46,10 @@ String indentJson(
     final truncated = maxStringLength != null
         ? truncateInnerString(data, maxStringLength)
         : data;
-    // : _convertIterablesToLists(data);
     final encoder = JsonEncoder.withIndent(indent);
     return encoder.convert(truncated);
   } catch (e) {
     return stringify(data, indent: indent, maxStringLength: maxStringLength);
-  }
-}
-
-/// Recursively converts all Iterables to Lists for JSON serialization.
-/// [input] The input data to process
-/// Returns: Processed data with all Iterables converted to Lists
-dynamic _convertIterablesToLists(dynamic input) {
-  if (input is Map) {
-    return input.map(
-      (key, value) => MapEntry(
-        _convertIterablesToLists(key),
-        _convertIterablesToLists(value),
-      ),
-    );
-  } else if (input is Iterable) {
-    return input.map((e) => _convertIterablesToLists(e)).toList();
-  } else {
-    return input;
   }
 }
 
