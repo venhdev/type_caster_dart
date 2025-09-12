@@ -1,4 +1,4 @@
-## [0.1.2]
+## [0.1.3]
 
 - Fixed: MappedListIterable JSON serialization error in stringify/indentJson functions
 

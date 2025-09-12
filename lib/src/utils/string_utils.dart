@@ -36,20 +36,50 @@ String truncate(
 /// [data] The data to format as JSON
 /// [indent] The indentation string (default: null)
 /// [maxStringLength] Maximum length for string fields (optional)
+/// [separator] The separator string for lists and maps (default: ',')
 /// Returns: Formatted JSON string
 String indentJson(
   dynamic data, {
   String? indent,
   int? maxStringLength,
+  String separator = ',',
 }) {
   try {
-    final truncated = maxStringLength != null
-        ? truncateInnerString(data, maxStringLength)
-        : data;
+    final truncated = maxStringLength != null ? truncateInnerString(data, maxStringLength) : data;
     final encoder = JsonEncoder.withIndent(indent);
     return encoder.convert(truncated);
+  } on JsonUnsupportedObjectError catch (_) {
+    // Fallback to toString() to avoid circular dependency with stringify
+    return _fallbackToString(data, indent: indent, maxStringLength: maxStringLength, separator: separator);
   } catch (e) {
-    return stringify(data, indent: indent, maxStringLength: maxStringLength);
+    // Fallback to toString() to avoid circular dependency with stringify
+    return _fallbackToString(data, indent: indent, maxStringLength: maxStringLength, separator: separator);
+  }
+}
+
+/// Fallback function to convert data to string without calling stringify
+/// to avoid circular dependency
+String _fallbackToString(
+  dynamic data, {
+  String? indent,
+  int? maxStringLength,
+  String separator = ',',
+}) {
+  if (data == null) return 'null';
+
+  try {
+    // For Maps and Iterables, try to convert to a simple string representation
+    if (data is Map) {
+      final entries = data.entries.map((e) => '${e.key}: ${e.value}').join(separator);
+      return '{ $entries }';
+    } else if (data is Iterable) {
+      final items = data.map((e) => e.toString()).join(separator);
+      return '[ $items ]';
+    } else {
+      return data.toString();
+    }
+  } catch (e) {
+    return 'Cannot convert data(${data.runtimeType}) to string';
   }
 }
 
@@ -187,9 +217,7 @@ String stringify(
     if (replacements != null) {
       result = _replaceInString(result, replacements);
     }
-    return (maxLen != null && result.length > maxLen)
-        ? result.substring(0, maxLen)
-        : result;
+    return (maxLen != null && result.length > maxLen) ? result.substring(0, maxLen) : result;
   }
 
   // Handle Maps and Iterables (Lists, Sets) by converting them to JSON strings
@@ -208,9 +236,7 @@ String stringify(
         indent: indent,
         maxStringLength: maxStringLength,
       );
-      return (maxLen != null && result.length > maxLen)
-          ? result.substring(0, maxLen)
-          : result;
+      return (maxLen != null && result.length > maxLen) ? result.substring(0, maxLen) : result;
     } catch (e) {
       // Fallback in case of JSON encoding errors (e.g., non-serializable objects within Map/Iterable)
       return mayString.toString();
@@ -220,11 +246,8 @@ String stringify(
     // use their default toString() representation.
     String result = mayString.toString();
     if (replacements != null) {
-      replacements
-          .forEach((key, value) => result = result.replaceAll(key, value));
+      replacements.forEach((key, value) => result = result.replaceAll(key, value));
     }
-    return (maxLen != null && result.length > maxLen)
-        ? result.substring(0, maxLen)
-        : result;
+    return (maxLen != null && result.length > maxLen) ? result.substring(0, maxLen) : result;
   }
 }

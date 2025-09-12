@@ -19,7 +19,7 @@ Add `type_caster` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  type_caster: ^0.1.1
+  type_caster: ^0.1.3
 ```
 
 ```bash
