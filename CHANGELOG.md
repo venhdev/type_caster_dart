@@ -1,3 +1,7 @@
+## [0.1.4]
+
+- Upgrade `intl` dependency to ^0.20.2
+
 ## [0.1.3]
 
 - Fixed: MappedListIterable JSON serialization error in stringify/indentJson functions
